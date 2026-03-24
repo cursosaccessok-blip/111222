@@ -379,8 +379,31 @@ ul {
   font-size: 1.1rem;
   color: rgba(255,255,255,0.9);
   max-width: 600px;
-  margin: 0 auto var(--spacing-lg);
+  margin: 0 auto var(--spacing-md);
   line-height: 1.6;
+}
+
+.hero__phone {
+  margin-bottom: var(--spacing-sm);
+}
+
+.hero__phone a {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius);
+  transition: all var(--transition);
+}
+
+.hero__phone a:hover {
+  background: rgba(255,255,255,0.15);
+  color: var(--color-secondary);
 }
 
 .hero__buttons {
@@ -466,6 +489,16 @@ ul {
   background: rgba(212,168,67,0.1);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
+}
+
+.card__price--link {
+  text-decoration: none;
+  transition: all var(--transition);
+}
+
+.card__price--link:hover {
+  background: var(--color-secondary);
+  color: #fff;
 }
 
 /* --- Nosotros --- */
@@ -696,6 +729,7 @@ ul {
 }
 
 .form__select {
+  -webkit-appearance: none;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -1001,6 +1035,20 @@ ul {
 
   .ubicacion__map iframe {
     height: 400px;
+  }
+}
+
+/* ============================================
+   Reduced Motion (Accessibility)
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

@@ -8,7 +8,7 @@
 
   // --- Configuración del negocio ---
   var CONFIG = {
-    whatsappNumber: '5215512345678',
+    whatsappNumber: '525512345678',
     whatsappMessage: 'Hola, me interesa conocer sus servicios',
     businessHours: {
       1: { open: '08:00', close: '18:00' }, // Lunes
@@ -123,23 +123,14 @@
     });
   }
 
-  // --- Smooth scroll para enlaces internos ---
-  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
-    anchor.addEventListener('click', function (e) {
-      var targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-
-      var target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  });
+  // Smooth scroll se maneja por CSS (scroll-behavior: smooth + scroll-padding-top)
+  // Esto permite que el hash de la URL se actualice correctamente para compartir enlaces
 
   // --- Indicador "Abierto / Cerrado" ---
   function checkBusinessStatus() {
-    var now = new Date();
+    // Usar hora de la zona horaria del negocio (CDMX), no la del visitante
+    var nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
+    var now = new Date(nowStr);
     var day = now.getDay();
     var hours = CONFIG.businessHours[day];
     var statusIndicator = document.getElementById('status-indicator');
@@ -149,7 +140,7 @@
 
     if (!hours) {
       statusIndicator.className = 'horario__status closed';
-      statusText.textContent = 'Cerrado ahora';
+      statusText.textContent = 'Cerrado ahora — Emergencias 24/7: 55 1234 5678';
     } else {
       var currentMinutes = now.getHours() * 60 + now.getMinutes();
       var openParts = hours.open.split(':');
@@ -162,7 +153,7 @@
         statusText.textContent = 'Abierto ahora';
       } else {
         statusIndicator.className = 'horario__status closed';
-        statusText.textContent = 'Cerrado ahora';
+        statusText.textContent = 'Cerrado ahora — Emergencias 24/7: 55 1234 5678';
       }
     }
 
@@ -288,7 +279,28 @@
         return;
       }
 
-      // Simular envío exitoso (no hay backend)
+      // Enviar datos por WhatsApp como alternativa funcional sin backend
+      var nombre = document.getElementById('nombre').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var telefono = document.getElementById('telefono').value.trim();
+      var servicio = document.getElementById('servicio').value;
+      var mensaje = document.getElementById('mensaje').value.trim();
+
+      var whatsappText = 'Hola, soy ' + nombre + '.%0A';
+      whatsappText += 'Correo: ' + email + '%0A';
+      if (telefono) whatsappText += 'Tel: ' + telefono + '%0A';
+      if (servicio) whatsappText += 'Servicio: ' + servicio + '%0A';
+      whatsappText += 'Mensaje: ' + mensaje;
+
+      var whatsappUrl = 'https://wa.me/' + CONFIG.whatsappNumber + '?text=' + encodeURIComponent(
+        'Hola, soy ' + nombre + '.\n' +
+        'Correo: ' + email + '\n' +
+        (telefono ? 'Tel: ' + telefono + '\n' : '') +
+        (servicio ? 'Servicio: ' + servicio + '\n' : '') +
+        'Mensaje: ' + mensaje
+      );
+
+      // Mostrar mensaje de éxito y abrir WhatsApp
       var submitBtn = document.getElementById('submit-btn');
       var successMsg = document.getElementById('form-success');
 
@@ -296,6 +308,7 @@
       submitBtn.textContent = 'Enviando...';
 
       setTimeout(function () {
+        window.open(whatsappUrl, '_blank');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Enviar Mensaje';
         contactForm.reset();
@@ -303,12 +316,7 @@
           successMsg.hidden = false;
           successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
-        // Ocultar mensaje después de 5 segundos
-        setTimeout(function () {
-          if (successMsg) successMsg.hidden = true;
-        }, 5000);
-      }, 1000);
+      }, 500);
     });
   }
 
